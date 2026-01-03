@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10) # for "CMAKE_CXX_STANDARD" version
 project(Diary VERSION 2.0)
 
 # SQLiteC++ 3.x now requires C++11 compiler
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add SQLite3 C++ wrapper around sqlite3 library (and sqlite3 itself provided for ease of use)

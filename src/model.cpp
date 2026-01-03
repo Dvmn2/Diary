@@ -1,9 +1,21 @@
 #include "model.h"
 
-void Model::add_el_data(int a) { Data.push_back(a); }
+Model::Model(std::string path) {
+    std::filesystem::path executable_path(path);
+    std::filesystem::path main_path = executable_path.parent_path();
+    Data_path = main_path.string() + "\\Diarys";
+    std::filesystem::create_directory(Data_path);
+}
 
-void Model::add_data(std::vector<int> a) { Data = a; }
+void Model::db_connect(std::string path) {
+    db = std::make_unique<SQLite::Database>(
+        path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+}
 
-int Model::get_el_data(int i) { return Data[i]; }
+void Model::add_el_data(int a) {}
 
-std::vector<int> Model::get_data() { return Data; }
+void Model::add_data(std::vector<int> a) {}
+
+int Model::get_el_data(int i) { return 1; }
+
+std::vector<int> Model::get_data() { return {1, 2}; }

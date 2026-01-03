@@ -10,8 +10,8 @@ project(SQLiteCpp VERSION 3.2.0)
 
 # SQLiteC++ 3.x requires C++11 features
 if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11)
-elseif (CMAKE_CXX_STANDARD LESS 11)
+    set(CMAKE_CXX_STANDARD 17)
+elseif (CMAKE_CXX_STANDARD LESS 17)
     message(WARNING "CMAKE_CXX_STANDARD has been set to '${CMAKE_CXX_STANDARD}' which is lower than the minimum required standard (c++11).")
 endif ()
 message(STATUS "Using c++ standard c++${CMAKE_CXX_STANDARD}")
