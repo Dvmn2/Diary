@@ -24,6 +24,9 @@ void Controller::run() {
             case 4:
                 task4();
                 break;
+            case 5:
+                task5();
+                break;
             default:
                 missing();
                 break;
@@ -62,6 +65,13 @@ void Controller::task4() {
     int el = model->get_el_data(i - 1);
     cwuser->output(view->el_to_line(el));
     cwuser->output(view->get_msg_ending(2));
+}
+
+void Controller::task5() {
+    cwuser->output(view->get_el_req());
+    std::string dbname = cwuser->inp_line();
+    cwuser->output(dbname);
+    model->db_connect(dbname);
 }
 
 void Controller::missing() {

@@ -1,6 +1,7 @@
 #include "cwuser.h"
 
 std::string CWUser::inp_line() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::string line;
     std::getline(std::cin, line);
 

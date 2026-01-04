@@ -18,4 +18,6 @@ class Controller {
     void task3();
     void task4();
     void missing();
+
+    void task5();
 };
