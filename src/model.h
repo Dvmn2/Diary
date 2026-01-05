@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include <string>
+#include <ctime>
 
 class Model {
    public:
@@ -21,11 +22,11 @@ class Model {
 
     void select_table(std::string name);
     void create_table(std::string name);
-    void delete_table(std::string name);
+    void delete_table(std::string id);
     std::vector<std::string> table_list();
 
     void find_note(std::string name);
-    void create_note(std::string name);
+    void create_note(std::string note, std::string keywords);
     void delete_note(std::string name);
-    std::vector<std::string> note_list();
+    std::vector<std::vector<std::string>> note_list();
 };

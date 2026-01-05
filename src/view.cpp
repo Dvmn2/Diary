@@ -1,14 +1,22 @@
 #include "view.h"
 
-std::string View::el_to_line(int a) { return std::to_string(a); }
+    std::string View::note_to_line(std::vector<std::string> note){
+        std::string line = "";
+        for(int i = 0; i < note.size(); i++){
+            line += note[i] + " ";
+        }
 
-std::string View::arr_to_line(std::vector<int> Array) {
-    std::string line = "";
-    for (int i = 0; i < Array.size(); i++) {
-        line += el_to_line(Array[i]) + " ";
+        return line;
     }
-    return line;
-}
+
+    std::string View::note_list_to_line(std::vector<std::vector<std::string>> note_list){
+        std::string line;
+        for(int i = 0; i < note_list.size(); i++){
+            line += note_to_line(note_list[i]) + "\n";
+        }
+
+        return line;
+    }
 
 std::string View::get_self_variants(std::vector<std::string> Array) {
     std::string variants = "";

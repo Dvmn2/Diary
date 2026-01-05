@@ -5,9 +5,8 @@
 
 class View {
    public:
-    std::string el_to_line(int a);
-    std::string arr_to_line(std::vector<int> Array);
-    std::string db_to_line();
+    std::string note_to_line(std::vector<std::string> note);
+    std::string note_list_to_line(std::vector<std::vector<std::string>> note_list);
 
     std::string get_self_variants(std::vector<std::string> Array);
 

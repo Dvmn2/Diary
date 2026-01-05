@@ -1,6 +1,6 @@
 #include "model.h"
 
-Model::Model(std::string path) {
+    Model::Model(std::string path) {
     std::filesystem::path executable_path(path);
     std::filesystem::path main_path = executable_path.parent_path();
     Data_path = main_path.string() + "\\Diarys";
@@ -50,11 +50,33 @@ std::vector<std::string> Model::table_list() {
 
 void Model::find_note(std::string name) {}
 
-void Model::create_note(std::string name) {}
+void Model::create_note(std::string note, std::string keywords) {
+    time_t timestamp = time(NULL);
+    struct tm datetime = *localtime(&timestamp);
+    char out[50];
 
-void Model::delete_note(std::string name) {}
+    strftime(out, 50, "%d.%m.%y %H:%M:%S", &datetime);
+    std::string time{out};
+    SQLite::Statement query(
+        *db, "INSERT INTO " + table_name + " (note, keywords, time) VALUES (?, ?, ?)");
+    query.bind(1, note);
+    query.bind(2, keywords);
+    query.bind(3, time);
+    query.exec();
+}
 
-std::vector<std::string> Model::note_list() { return {}; }
+void Model::delete_note(std::string id) { db->exec("DELETE FROM " + table_name + " WHERE id == " + id); }
+
+std::vector<std::vector<std::string>> Model::note_list() {
+    std::vector<std::vector<std::string>> list = {};
+    SQLite::Statement query(*db, "SELECT * FROM " + table_name);
+    while (query.executeStep()) {
+        list.push_back({query.getColumn(1).getString(), query.getColumn(2).getString(),
+                        query.getColumn(3).getString()});
+    }
+
+    return list;
+}
 
 /*
     // test

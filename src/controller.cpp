@@ -175,7 +175,7 @@ void Controller::table_task3() {
     }
     if (list_num != 0) {
         std::string name = list[list_num - 1];
-        model->delete_note(name);
+        model->delete_table(name);
         cwuser->out_line(view->get_success());
     }
     cwuser->out_line(view->get_space(1));
@@ -206,11 +206,20 @@ void Controller::note_work() {
     }
 }
 
-void Controller::note_task1() {}
+void Controller::note_task1() {
+    std::string note = "Day was hard";
+    std::string keywords = "day hard";
+    model->create_note(note, keywords);
+}
 
 void Controller::note_task2() {}
 
-void Controller::note_task3() {}
+void Controller::note_task3() {
+    // irl sleap
+    int id = 0;
+    cwuser->out_line(view->note_list_to_line(model->note_list()));
+    model->delete_table(std::to_string(id));
+}
 
 void Controller::missing() {
     cwuser->out_line(view->get_missing_msg());
