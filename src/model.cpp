@@ -29,9 +29,14 @@ std::vector<std::string> Model::db_list() {
     return Array;
 }
 
-void Model::select_table(std::string name) {}
-void Model::create_table(std::string name) {}
-void Model::delete_table(std::string name) {}
+void Model::select_table(std::string name) { table_name = name; }
+
+void Model::create_table(std::string name) {
+    db->exec("CREATE TABLE " + name +
+             " (id INTEGER PRIMARY KEY, note TEXT, keywords TEXT, time TEXT)");
+}
+
+void Model::delete_table(std::string name) { db->exec("DROP TABLE IF EXISTS " + name); }
 
 std::vector<std::string> Model::table_list() {
     std::vector<std::string> Array = {};
@@ -42,6 +47,14 @@ std::vector<std::string> Model::table_list() {
 
     return Array;
 }
+
+void Model::find_note(std::string name) {}
+
+void Model::create_note(std::string name) {}
+
+void Model::delete_note(std::string name) {}
+
+std::vector<std::string> Model::note_list() { return {}; }
 
 /*
     // test

@@ -23,15 +23,11 @@ class Controller {
     void table_task1();
     void table_task2();
     void table_task3();
-    void table_task4();
-    void table_task5();
 
-    void rec_work();
-    void rec_task1();
-    void rec_task2();
-    void rec_task3();
-    void rec_task4();
-    void rec_task5();
+    void note_work();
+    void note_task1();
+    void note_task2();
+    void note_task3();
 
     void missing();
 

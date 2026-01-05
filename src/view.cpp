@@ -59,20 +59,18 @@ std::string View::get_table_name_req() {
     return line;
 }
 
-std::string View::get_rec_variants() {
+std::string View::get_note_variants() {
     std::string variants =
-        "1. Add data\n"
-        "2. Add element\n"
-        "3. Get data\n"
-        "4. Get element\n"
-        "4. DB Connect\n"
+        "1. Find note\n"
+        "2. Create note\n"
+        "3. Delete note\n"
         "0. Exit\n"
-        "Select a task (0-4): ";
+        "Select a task (0-3): ";
     return variants;
 }
 
-std::string View::get_rec_name_req() {
-    std::string line = "Enter record name:\n> ";
+std::string View::get_note_name_req() {
+    std::string line = "Enter note name:\n> ";
     return line;
 }
 
@@ -87,7 +85,7 @@ std::string View::get_el_req() {
 }
 
 std::string View::get_already_exists() {
-    std::string line = "This file already exists\n";
+    std::string line = "This name already exists\n";
     return line;
 }
 

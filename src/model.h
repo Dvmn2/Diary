@@ -23,4 +23,9 @@ class Model {
     void create_table(std::string name);
     void delete_table(std::string name);
     std::vector<std::string> table_list();
+
+    void find_note(std::string name);
+    void create_note(std::string name);
+    void delete_note(std::string name);
+    std::vector<std::string> note_list();
 };

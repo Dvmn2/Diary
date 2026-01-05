@@ -47,21 +47,21 @@ void Controller::db_task1() {
         table_work();
     } else {
     */
-        cwuser->out_line(view->get_space(1));
+    cwuser->out_line(view->get_space(1));
+    cwuser->out_line(view->get_self_variants(list));
+    int list_num = cwuser->inp_array(1)[0];
+    while (list_num < 0 || list_num > list.size()) {
+        missing();
         cwuser->out_line(view->get_self_variants(list));
-        int list_num = cwuser->inp_array(1)[0];
-        while (list_num < 0 || list_num > list.size()) {
-            missing();
-            cwuser->out_line(view->get_self_variants(list));
-            list_num = cwuser->inp_array(1)[0];
-        }
-        if (list_num != 0) {
-            dbname = list[list_num - 1];
-            model->db_connect(dbname);
-            cwuser->out_line(view->get_success());
-            cwuser->out_line(view->get_space(1));
-            table_work();
-        }
+        list_num = cwuser->inp_array(1)[0];
+    }
+    if (list_num != 0) {
+        dbname = list[list_num - 1];
+        model->db_connect(dbname);
+        cwuser->out_line(view->get_success());
+        cwuser->out_line(view->get_space(1));
+        table_work();
+    }
     //}
     cwuser->out_line(view->get_space(1));
 }
@@ -116,12 +116,6 @@ void Controller::table_work() {
             case 3:
                 table_task3();
                 break;
-            case 4:
-                table_task4();
-                break;
-            case 5:
-                table_task5();
-                break;
             default:
                 missing();
                 break;
@@ -132,36 +126,75 @@ void Controller::table_work() {
     }
 }
 
-void Controller::table_task1() {}
+void Controller::table_task1() {
+    std::vector<std::string> list = model->table_list();
+    cwuser->out_line(view->get_space(1));
+    cwuser->out_line(view->get_self_variants(list));
+    int list_num = cwuser->inp_array(1)[0];
+    while (list_num < 0 || list_num > list.size()) {
+        missing();
+        cwuser->out_line(view->get_self_variants(list));
+        list_num = cwuser->inp_array(1)[0];
+    }
+    if (list_num != 0) {
+        std::string name = list[list_num - 1];
+        model->table_name = name;
+        cwuser->out_line(view->get_success());
+        cwuser->out_line(view->get_space(1));
+        note_work();
+    }
+    cwuser->out_line(view->get_space(1));
+}
 
-void Controller::table_task2() {}
+void Controller::table_task2() {
+    std::vector<std::string> list = model->table_list();
+    cwuser->out_line(view->get_table_name_req());
+    std::string name = cwuser->inp_word();
+    auto id = std::find(list.begin(), list.end(), name);
+    while (id != list.end()) {
+        cwuser->out_line(view->get_already_exists());
+        cwuser->out_line(view->get_table_name_req());
+        name = cwuser->inp_word();
+        id = std::find(list.begin(), list.end(), name);
+    }
+    model->create_table(name);
+    cwuser->out_line(view->get_success());
+    cwuser->out_line(view->get_space(1));
+}
 
-void Controller::table_task3() {}
+void Controller::table_task3() {
+    cwuser->out_line(view->get_space(1));
+    std::vector<std::string> list = model->table_list();
+    std::string variants = view->get_self_variants(list);
+    cwuser->out_line(variants);
+    int list_num = cwuser->inp_array(1)[0];
+    while (list_num < 0 || list_num > list.size()) {
+        missing();
+        cwuser->out_line(variants);
+        list_num = cwuser->inp_array(1)[0];
+    }
+    if (list_num != 0) {
+        std::string name = list[list_num - 1];
+        model->delete_note(name);
+        cwuser->out_line(view->get_success());
+    }
+    cwuser->out_line(view->get_space(1));
+}
 
-void Controller::table_task4() {}
-
-void Controller::table_task5() {}
-
-void Controller::rec_work() {
-    std::string variants = view->get_rec_variants();
+void Controller::note_work() {
+    std::string variants = view->get_note_variants();
     cwuser->out_line(variants);
     int task = cwuser->inp_array(1)[0];
     while (task != 0) {
         switch (task) {
             case 1:
-                rec_task1();
+                note_task1();
                 break;
             case 2:
-                rec_task2();
+                note_task2();
                 break;
             case 3:
-                rec_task3();
-                break;
-            case 4:
-                rec_task4();
-                break;
-            case 5:
-                rec_task5();
+                note_task3();
                 break;
             default:
                 missing();
@@ -173,15 +206,11 @@ void Controller::rec_work() {
     }
 }
 
-void Controller::rec_task1() {}
+void Controller::note_task1() {}
 
-void Controller::rec_task2() {}
+void Controller::note_task2() {}
 
-void Controller::rec_task3() {}
-
-void Controller::rec_task4() {}
-
-void Controller::rec_task5() {}
+void Controller::note_task3() {}
 
 void Controller::missing() {
     cwuser->out_line(view->get_missing_msg());

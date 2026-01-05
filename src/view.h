@@ -18,8 +18,8 @@ class View {
     std::string get_table_variants();
     std::string get_table_name_req();
 
-    std::string get_rec_variants();
-    std::string get_rec_name_req();
+    std::string get_note_variants();
+    std::string get_note_name_req();
 
     std::string get_el_req();
     std::string get_el_id_req();
