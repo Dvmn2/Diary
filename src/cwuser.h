@@ -8,5 +8,6 @@ class CWUser {
    public:
     std::string inp_line();
     std::vector<int> inp_array(int n);
-    void output(std::string line);
+    std::string inp_word();
+    void out_line(std::string line);
 };

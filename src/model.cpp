@@ -13,27 +13,58 @@ void Model::db_connect(std::string name) {
         path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 }
 
-void Model::add_el_data(int a) {
+void Model::db_delete(std::string name) {
+    db.reset();
+    std::string path = Data_path + "\\" + name + ".db3";
+    remove(path.c_str());
+}
+
+std::vector<std::string> Model::db_list() {
+    std::vector<std::string> Array = {};
+    for (const auto& entry : std::filesystem::directory_iterator(Data_path)) {
+        if (entry.path().extension().string() == ".db3")
+            Array.push_back(entry.path().stem().string());
+    }
+
+    return Array;
+}
+
+void Model::select_table(std::string name) {}
+void Model::create_table(std::string name) {}
+void Model::delete_table(std::string name) {}
+
+std::vector<std::string> Model::table_list() {
+    std::vector<std::string> Array = {};
+    SQLite::Statement query(*db, "SELECT name FROM sqlite_master WHERE type='table'");
+    while (query.executeStep()) {
+        Array.push_back(query.getColumn(0));
+    }
+
+    return Array;
+}
+
+/*
+    // test
     db->exec("DROP TABLE IF EXISTS test");
     db->exec("CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)");
 
-    int nb = db->exec("INSERT INTO test VALUES (NULL, \"test\")");
+    db->exec("DROP TABLE IF EXISTS test2");
+    db->exec("CREATE TABLE test2 (id INTEGER PRIMARY KEY, value TEXT)");
 
-    nb = db->exec("INSERT INTO test VALUES (NULL, \"second\")");
+    db->exec("INSERT INTO test VALUES (NULL, \"test\")");
 
-    nb = db->exec("UPDATE test SET value=\"second-updated\" WHERE id='2'");
-    /*
+    db->exec("INSERT INTO test VALUES (NULL, \"second\")");
+
+    db->exec("UPDATE test SET value=\"second-updated\" WHERE id='2'");
+
     SQLite::Statement query(*db, "SELECT * FROM test");
-    std::cout << "SELECT * FROM test :\n";
     while (query.executeStep()) {
         std::cout << "row (" << query.getColumn(0) << ", \"" << query.getColumn(1)
                   << "\")\n";
     }
-    */
-}
 
-void Model::add_data(std::vector<int> a) {}
-
-int Model::get_el_data(int i) { return 1; }
-
-std::vector<int> Model::get_data() { return {1, 2}; }
+    SQLite::Statement query2(*db, "SELECT name FROM sqlite_master WHERE type='table'");
+    while (query2.executeStep()) {
+        std::cout << "row (" << query2.getColumn(0) << ", \""  << "\")\n";
+    }
+*/

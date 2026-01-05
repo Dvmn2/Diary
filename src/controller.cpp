@@ -6,75 +6,184 @@ Controller::Controller(CWUser* cwu, View* v, Model* m) {
     model = m;
 }
 
-void Controller::run() {
-    std::string variants = view->get_variants();
-    cwuser->output(variants);
+void Controller::run() { db_work(); }
+
+void Controller::db_work() {
+    std::string variants = view->get_db_variants();
+    cwuser->out_line(variants);
     int task = cwuser->inp_array(1)[0];
     while (task != 0) {
         switch (task) {
             case 1:
-                task1();
+                db_task1();
                 break;
             case 2:
-                task2();
+                db_task2();
                 break;
             case 3:
-                task3();
-                break;
-            case 4:
-                task4();
-                break;
-            case 5:
-                task5();
+                db_task3();
                 break;
             default:
                 missing();
                 break;
         }
 
-        cwuser->output(variants);
+        cwuser->out_line(variants);
         task = cwuser->inp_array(1)[0];
     }
 }
 
-void Controller::task1() {
-    cwuser->output(view->get_arr_len());
-    int len = cwuser->inp_array(1)[0];
-    cwuser->output(view->get_arr_req());
-    std::vector<int> NewData = cwuser->inp_array(len);
-    model->add_data(NewData);
-    cwuser->output(view->get_msg_ending(1));
+void Controller::db_task1() {
+    std::vector<std::string> list = model->db_list();
+    std::string dbname;
+    /*
+    if (list.size() == 0) {
+        cwuser->out_line(view->get_db_absent());
+    } else if (list.size() == 1) {
+        dbname = list[0];
+        model->db_connect(dbname);
+        cwuser->out_line(view->get_success());
+        cwuser->out_line(view->get_space(1));
+        table_work();
+    } else {
+    */
+        cwuser->out_line(view->get_space(1));
+        cwuser->out_line(view->get_self_variants(list));
+        int list_num = cwuser->inp_array(1)[0];
+        while (list_num < 0 || list_num > list.size()) {
+            missing();
+            cwuser->out_line(view->get_self_variants(list));
+            list_num = cwuser->inp_array(1)[0];
+        }
+        if (list_num != 0) {
+            dbname = list[list_num - 1];
+            model->db_connect(dbname);
+            cwuser->out_line(view->get_success());
+            cwuser->out_line(view->get_space(1));
+            table_work();
+        }
+    //}
+    cwuser->out_line(view->get_space(1));
 }
 
-void Controller::task2() {
-    cwuser->output(view->get_el_req());
-    int n = cwuser->inp_array(1)[0];
-    model->add_el_data(n);
-    cwuser->output(view->get_msg_ending(1));
-}
-
-void Controller::task3() {
-    std::vector<int> NewData = model->get_data();
-    cwuser->output(view->arr_to_line(NewData));
-    cwuser->output(view->get_msg_ending(2));
-}
-
-void Controller::task4() {
-    cwuser->output(view->get_el_id());
-    int i = cwuser->inp_array(1)[0];
-    int el = model->get_el_data(i - 1);
-    cwuser->output(view->el_to_line(el));
-    cwuser->output(view->get_msg_ending(2));
-}
-
-void Controller::task5() {
-    cwuser->output(view->get_el_req());
-    std::string dbname = cwuser->inp_line();
-    cwuser->output(dbname);
+void Controller::db_task2() {
+    std::vector<std::string> list = model->db_list();
+    cwuser->out_line(view->get_db_name_req());
+    std::string dbname = cwuser->inp_word();
+    auto id = std::find(list.begin(), list.end(), dbname);
+    while (id != list.end()) {
+        cwuser->out_line(view->get_already_exists());
+        cwuser->out_line(view->get_db_name_req());
+        dbname = cwuser->inp_word();
+        id = std::find(list.begin(), list.end(), dbname);
+    }
     model->db_connect(dbname);
+    cwuser->out_line(view->get_success());
+    cwuser->out_line(view->get_space(1));
 }
+
+void Controller::db_task3() {
+    cwuser->out_line(view->get_space(1));
+    std::vector<std::string> list = model->db_list();
+    std::string variants = view->get_self_variants(list);
+    cwuser->out_line(variants);
+    int list_num = cwuser->inp_array(1)[0];
+    while (list_num < 0 || list_num > list.size()) {
+        missing();
+        cwuser->out_line(variants);
+        list_num = cwuser->inp_array(1)[0];
+    }
+    if (list_num != 0) {
+        std::string dbname = list[list_num - 1];
+        model->db_delete(dbname);
+        cwuser->out_line(view->get_success());
+    }
+    cwuser->out_line(view->get_space(1));
+}
+
+void Controller::table_work() {
+    std::string variants = view->get_table_variants();
+    cwuser->out_line(variants);
+    int task = cwuser->inp_array(1)[0];
+    while (task != 0) {
+        switch (task) {
+            case 1:
+                table_task1();
+                break;
+            case 2:
+                table_task2();
+                break;
+            case 3:
+                table_task3();
+                break;
+            case 4:
+                table_task4();
+                break;
+            case 5:
+                table_task5();
+                break;
+            default:
+                missing();
+                break;
+        }
+
+        cwuser->out_line(variants);
+        task = cwuser->inp_array(1)[0];
+    }
+}
+
+void Controller::table_task1() {}
+
+void Controller::table_task2() {}
+
+void Controller::table_task3() {}
+
+void Controller::table_task4() {}
+
+void Controller::table_task5() {}
+
+void Controller::rec_work() {
+    std::string variants = view->get_rec_variants();
+    cwuser->out_line(variants);
+    int task = cwuser->inp_array(1)[0];
+    while (task != 0) {
+        switch (task) {
+            case 1:
+                rec_task1();
+                break;
+            case 2:
+                rec_task2();
+                break;
+            case 3:
+                rec_task3();
+                break;
+            case 4:
+                rec_task4();
+                break;
+            case 5:
+                rec_task5();
+                break;
+            default:
+                missing();
+                break;
+        }
+
+        cwuser->out_line(variants);
+        task = cwuser->inp_array(1)[0];
+    }
+}
+
+void Controller::rec_task1() {}
+
+void Controller::rec_task2() {}
+
+void Controller::rec_task3() {}
+
+void Controller::rec_task4() {}
+
+void Controller::rec_task5() {}
 
 void Controller::missing() {
-    cwuser->output(view->get_missing_msg());
-    cwuser->output(view->get_msg_ending(1));
+    cwuser->out_line(view->get_missing_msg());
+    cwuser->out_line(view->get_space(1));
 }

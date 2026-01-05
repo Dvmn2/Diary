@@ -8,6 +8,13 @@ std::string CWUser::inp_line() {
     return line;
 }
 
+std::string CWUser::inp_word() {
+    std::string line;
+    std::cin >> line;
+
+    return line;
+}
+
 std::vector<int> CWUser::inp_array(int n) {
     std::vector<int> Data = {};
     for (int i = 0; i < n; i++) {
@@ -19,4 +26,4 @@ std::vector<int> CWUser::inp_array(int n) {
     return Data;
 }
 
-void CWUser::output(std::string line) { std::cout << line; }
+void CWUser::out_line(std::string line) { std::cout << line; }

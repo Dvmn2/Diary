@@ -4,18 +4,23 @@
 
 #include <filesystem>
 #include <vector>
+#include <string>
 
 class Model {
    public:
     Model(std::string path);
 
     std::string Data_path = "";
+    std::string table_name = "";
     
     std::unique_ptr<SQLite::Database> db;
 
     void db_connect(std::string path);
-    void add_el_data(int a);
-    void add_data(std::vector<int> a);
-    int get_el_data(int i);
-    std::vector<int> get_data();
+    void db_delete(std::string name);
+    std::vector<std::string> db_list();
+
+    void select_table(std::string name);
+    void create_table(std::string name);
+    void delete_table(std::string name);
+    std::vector<std::string> table_list();
 };

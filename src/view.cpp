@@ -10,33 +10,73 @@ std::string View::arr_to_line(std::vector<int> Array) {
     return line;
 }
 
-std::string View::get_variants() {
+std::string View::get_self_variants(std::vector<std::string> Array) {
+    std::string variants = "";
+    int i;
+    for (i = 1; i <= Array.size(); i++) {
+        variants += std::to_string(i) + ". " + Array[i - 1] + "\n";
+    }
+    variants +=
+        "0. Exit\n"
+        "Select a task (0-" +
+        std::to_string(i - 1) + "): ";
+
+    return variants;
+}
+
+std::string View::get_db_variants() {
+    std::string variants =
+        "1. Select database\n"
+        "2. Create database\n"
+        "3. Delete database\n"
+        "0. Exit\n"
+        "Select a task (0-3): ";
+    return variants;
+}
+
+std::string View::get_db_name_req() {
+    std::string line = "Enter database name:\n> ";
+    return line;
+}
+
+std::string View::get_db_absent() {
+    std::string line = "First, create a database\n";
+    return line;
+}
+
+std::string View::get_table_variants() {
+    std::string variants =
+        "1. Select table\n"
+        "2. Create table\n"
+        "3. Delete table\n"
+        "0. Exit\n"
+        "Select a task (0-3): ";
+    return variants;
+}
+
+std::string View::get_table_name_req() {
+    std::string line = "Enter table name:\n> ";
+    return line;
+}
+
+std::string View::get_rec_variants() {
     std::string variants =
         "1. Add data\n"
         "2. Add element\n"
         "3. Get data\n"
         "4. Get element\n"
+        "4. DB Connect\n"
         "0. Exit\n"
         "Select a task (0-4): ";
     return variants;
 }
 
-std::string View::get_error() {
-    std::string line = "Something went wrong\n";
+std::string View::get_rec_name_req() {
+    std::string line = "Enter record name:\n> ";
     return line;
 }
 
-std::string View::get_arr_req() {
-    std::string line = "Enter data:\n> ";
-    return line;
-}
-
-std::string View::get_arr_len() {
-    std::string line = "Enter data length:\n> ";
-    return line;
-}
-
-std::string View::get_el_id() {
+std::string View::get_el_id_req() {
     std::string line = "Enter element number:\n> ";
     return line;
 }
@@ -46,12 +86,27 @@ std::string View::get_el_req() {
     return line;
 }
 
+std::string View::get_already_exists() {
+    std::string line = "This file already exists\n";
+    return line;
+}
+
+std::string View::get_error() {
+    std::string line = "Something went wrong\n";
+    return line;
+}
+
+std::string View::get_success() {
+    std::string line = "Successful\n";
+    return line;
+}
+
 std::string View::get_missing_msg() {
     std::string line = "Non-existent task\n";
     return line;
 }
 
-std::string View::get_msg_ending(int n) {
+std::string View::get_space(int n) {
     std::string line = "";
     for (int i = 0; i < n; i++) {
         line += "\n";
