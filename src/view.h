@@ -27,6 +27,8 @@ class View {
     std::string get_el_id_req();
     std::string get_text_req();
     std::string get_keywords_req();
+    std::string get_search_req();
+    std::string get_note_id_req();
     std::string get_already_exists();
     std::string get_error();
     std::string get_success();

@@ -1,39 +1,27 @@
 #include "cwuser.h"
 
-std::string CWUser::inp_line() {
+std::string CWUser::inp_line() const {
     std::string line;
     std::getline(std::cin, line);
-
     return line;
 }
 
-std::string CWUser::inp_text() {
-    std::string line = "";
-    std::string part = inp_line();
-    while (part != "0"){
-        line += part + "\n";
-        part = inp_line();
+std::string CWUser::inp_text() const {
+    std::string result;
+    while (true) {
+        std::string part = inp_line();
+        if (part == "0") break;
+        result.append(part).append("\n");
     }
-
-    return line;
+    return result;
 }
 
-std::string CWUser::inp_word() {
-    std::string line;
-    std::cin >> line;
-
-    return line;
+std::string CWUser::inp_word() const {
+    std::string word;
+    std::cin >> word;
+    return word;
 }
 
-std::vector<int> CWUser::inp_array(int n) {
-    std::vector<int> Data = {};
-    for (int i = 0; i < n; i++) {
-        int a;
-        std::cin >> a;
-        Data.push_back(a);
-    }
-
-    return Data;
+void CWUser::out_line(const std::string& line) const {
+    std::cout << line;
 }
-
-void CWUser::out_line(std::string line) { std::cout << line; }

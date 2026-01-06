@@ -48,7 +48,35 @@ std::vector<std::string> Model::table_list() {
     return Array;
 }
 
-void Model::find_note(std::string name) {}
+std::vector<std::vector<std::string>> Model::find_note(std::string search) {
+    std::vector<std::vector<std::string>> results = {};
+
+    bool is_number =
+        !search.empty() && std::all_of(search.begin(), search.end(), ::isdigit);
+
+    SQLite::Statement query(
+        *db, is_number ? "SELECT id, note, keywords, time FROM " + table_name +
+                             " WHERE id = ?"
+                       : "SELECT id, note, keywords, time FROM " + table_name +
+                             " WHERE note LIKE ? OR keywords LIKE ?");
+
+    if (is_number) {
+        query.bind(1, std::stoi(search));
+    } else {
+        std::string pattern = "%" + search + "%";
+        query.bind(1, pattern);
+        query.bind(2, pattern);
+    }
+
+    while (query.executeStep()) {
+        results.push_back({std::to_string(query.getColumn(0).getInt()),
+                           query.getColumn(1).getString(),
+                           query.getColumn(2).getString(),
+                           query.getColumn(3).getString()});
+    }
+
+    return results;
+}
 
 void Model::create_note(std::string note, std::string keywords) {
     time_t timestamp = time(NULL);
@@ -70,6 +98,36 @@ void Model::delete_note(std::string id) {
     db->exec("UPDATE " + table_name + " SET id = id - 1 WHERE id > " + id + ";");
 }
 
+void Model::edit_note(std::string id, std::string note, std::string keywords) {
+    time_t timestamp = time(NULL);
+    struct tm datetime = *localtime(&timestamp);
+    char out[50];
+
+    strftime(out, 50, "%d.%m.%y %H:%M:%S", &datetime);
+    std::string time{out};
+
+    db->exec("UPDATE " + table_name + " SET note='" + note + "', keywords='" +
+             keywords + "', time='" + time + "' WHERE id='" + id + "'");
+}
+
+std::vector<std::string> Model::read_note(const std::string id) {
+    SQLite::Statement query(
+        *db, "SELECT id, note, keywords, time FROM " + table_name + " WHERE id = ?");
+
+    query.bind(1, id);
+
+    std::vector<std::string> list;
+
+    if (query.executeStep()) {
+        list.push_back(std::to_string(query.getColumn(0).getInt()));
+        list.push_back(query.getColumn(1).getString());
+        list.push_back(query.getColumn(2).getString());
+        list.push_back(query.getColumn(3).getString());
+    }
+
+    return list;
+}
+
 std::vector<std::vector<std::string>> Model::note_list() {
     std::vector<std::vector<std::string>> list = {};
     SQLite::Statement query(*db, "SELECT * FROM " + table_name);
@@ -80,29 +138,3 @@ std::vector<std::vector<std::string>> Model::note_list() {
 
     return list;
 }
-
-/*
-    // test
-    db->exec("DROP TABLE IF EXISTS test");
-    db->exec("CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)");
-
-    db->exec("DROP TABLE IF EXISTS test2");
-    db->exec("CREATE TABLE test2 (id INTEGER PRIMARY KEY, value TEXT)");
-
-    db->exec("INSERT INTO test VALUES (NULL, \"test\")");
-
-    db->exec("INSERT INTO test VALUES (NULL, \"second\")");
-
-    db->exec("UPDATE test SET value=\"second-updated\" WHERE id='2'");
-
-    SQLite::Statement query(*db, "SELECT * FROM test");
-    while (query.executeStep()) {
-        std::cout << "row (" << query.getColumn(0) << ", \"" << query.getColumn(1)
-                  << "\")\n";
-    }
-
-    SQLite::Statement query2(*db, "SELECT name FROM sqlite_master WHERE type='table'");
-    while (query2.executeStep()) {
-        std::cout << "row (" << query2.getColumn(0) << ", \""  << "\")\n";
-    }
-*/

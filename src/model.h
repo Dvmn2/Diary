@@ -25,8 +25,10 @@ class Model {
     void delete_table(std::string id);
     std::vector<std::string> table_list();
 
-    void find_note(std::string name);
+    std::vector<std::vector<std::string>> find_note(std::string search);
     void create_note(std::string note, std::string keywords);
-    void delete_note(std::string name);
+    void delete_note(std::string id);
+    void edit_note(std::string id, std::string note, std::string keywords);
+    std::vector<std::string> read_note(std::string id);
     std::vector<std::vector<std::string>> note_list();
 };

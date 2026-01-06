@@ -93,8 +93,10 @@ std::string View::get_note_variants() {
         "1. Find note\n"
         "2. Create note\n"
         "3. Delete note\n"
+        "4. Edit note\n"
+        "5. Read note\n"
         "0. Exit\n"
-        "Select a task (0-3): ";
+        "Select a task (0-5): ";
     return variants;
 }
 
@@ -130,6 +132,16 @@ std::string View::get_text_req() {
 
 std::string View::get_keywords_req() {
     std::string line = "Enter keywords (0 - Finish):\n";
+    return line;
+}
+
+std::string View::get_search_req() {
+    std::string line = "Enter keyword:\n> ";
+    return line;
+}
+
+std::string View::get_note_id_req() {
+    std::string line = "Enter note id:\n> ";
     return line;
 }
 

@@ -5,12 +5,13 @@
 #include "view.h"
 
 class Controller {
-   public:
-    Controller(CWUser* cwuser, View* view, Model* model);
+   private:
+    CWUser& cwuser;
+    View& view;
+    Model& model;
 
-    CWUser* cwuser;
-    View* view;
-    Model* model;
+   public:
+    Controller(CWUser& cwu, View& v, Model& m);
 
     void run();
 
@@ -28,8 +29,9 @@ class Controller {
     void note_task1();
     void note_task2();
     void note_task3();
+    void note_task4();
+    void note_task5();
 
     void missing();
     int int_enter();
-
 };
