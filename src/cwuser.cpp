@@ -1,9 +1,19 @@
 #include "cwuser.h"
 
 std::string CWUser::inp_line() {
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::string line;
     std::getline(std::cin, line);
+
+    return line;
+}
+
+std::string CWUser::inp_text() {
+    std::string line = "";
+    std::string part = inp_line();
+    while (part != "0"){
+        line += part + "\n";
+        part = inp_line();
+    }
 
     return line;
 }

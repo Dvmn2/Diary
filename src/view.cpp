@@ -1,22 +1,43 @@
 #include "view.h"
 
-    std::string View::note_to_line(std::vector<std::string> note){
-        std::string line = "";
-        for(int i = 0; i < note.size(); i++){
-            line += note[i] + " ";
-        }
-
-        return line;
+std::vector<std::string> View::note_list_list_to_note_list(
+    std::vector<std::vector<std::string>> note_list) {
+    std::vector<std::string> line = {};
+    for (int i = 0; i < note_list.size(); i++) {
+        line.push_back(note_list_to_line(note_list[i]));
     }
 
-    std::string View::note_list_to_line(std::vector<std::vector<std::string>> note_list){
-        std::string line;
-        for(int i = 0; i < note_list.size(); i++){
-            line += note_to_line(note_list[i]) + "\n";
-        }
+    return line;
+}
 
-        return line;
+std::string View::note_list_to_line(std::vector<std::string> note) {
+    std::string line = "";
+    int max_len = 20;
+    for (int i = 0; i < note.size(); i++) {
+        std::string part = note[i];
+        part.erase(std::remove(part.begin(), part.end(), '\n'), part.end());
+        part.erase(std::remove(part.begin(), part.end(), '\r'), part.end());
+        if (part.length() > max_len) {
+            part = part.substr(0, max_len - 3) + "...";
+        }
+        if (part.length() < max_len) {
+            part += std::string(max_len - part.length(), ' ');
+        }
+        line += part + "     ";
     }
+
+    return line;
+}
+
+std::string View::note_list_list_to_line(
+    std::vector<std::vector<std::string>> note_list) {
+    std::string line;
+    for (int i = 0; i < note_list.size(); i++) {
+        line += note_list_to_line(note_list[i]) + "\n";
+    }
+
+    return line;
+}
 
 std::string View::get_self_variants(std::vector<std::string> Array) {
     std::string variants = "";
@@ -82,6 +103,11 @@ std::string View::get_note_name_req() {
     return line;
 }
 
+std::string View::get_int_req() {
+    std::string line = "Enter integer number:\n> ";
+    return line;
+}
+
 std::string View::get_el_id_req() {
     std::string line = "Enter element number:\n> ";
     return line;
@@ -94,6 +120,16 @@ std::string View::get_el_req() {
 
 std::string View::get_already_exists() {
     std::string line = "This name already exists\n";
+    return line;
+}
+
+std::string View::get_text_req() {
+    std::string line = "Enter text (0 - Finish):\n";
+    return line;
+}
+
+std::string View::get_keywords_req() {
+    std::string line = "Enter keywords (0 - Finish):\n";
     return line;
 }
 

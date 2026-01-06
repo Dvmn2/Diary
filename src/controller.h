@@ -30,5 +30,6 @@ class Controller {
     void note_task3();
 
     void missing();
+    int int_enter();
 
 };

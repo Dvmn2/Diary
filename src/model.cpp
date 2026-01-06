@@ -1,6 +1,6 @@
 #include "model.h"
 
-    Model::Model(std::string path) {
+Model::Model(std::string path) {
     std::filesystem::path executable_path(path);
     std::filesystem::path main_path = executable_path.parent_path();
     Data_path = main_path.string() + "\\Diarys";
@@ -65,7 +65,10 @@ void Model::create_note(std::string note, std::string keywords) {
     query.exec();
 }
 
-void Model::delete_note(std::string id) { db->exec("DELETE FROM " + table_name + " WHERE id == " + id); }
+void Model::delete_note(std::string id) {
+    db->exec("DELETE FROM " + table_name + " WHERE id == " + id);
+    db->exec("UPDATE " + table_name + " SET id = id - 1 WHERE id > " + id + ";");
+}
 
 std::vector<std::vector<std::string>> Model::note_list() {
     std::vector<std::vector<std::string>> list = {};
