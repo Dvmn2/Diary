@@ -2,10 +2,10 @@
 
 #include <SQLiteCpp/SQLiteCpp.h>
 
-#include <filesystem>
-#include <vector>
-#include <string>
 #include <ctime>
+#include <filesystem>
+#include <string>
+#include <vector>
 
 class Model {
    public:
@@ -13,7 +13,7 @@ class Model {
 
     std::string Data_path = "";
     std::string table_name = "";
-    
+
     std::unique_ptr<SQLite::Database> db;
 
     void db_connect(std::string path);

@@ -10,7 +10,7 @@ std::string CWUser::inp_text() const {
     std::string result;
     while (true) {
         std::string part = inp_line();
-        if (part == "0") break;
+        if (part == "0") break;  // Читаем текст пока не 0
         result.append(part).append("\n");
     }
     return result;
@@ -22,6 +22,4 @@ std::string CWUser::inp_word() const {
     return word;
 }
 
-void CWUser::out_line(const std::string& line) const {
-    std::cout << line;
-}
+void CWUser::out_line(const std::string& line) const { std::cout << line; }
