@@ -3,19 +3,19 @@
 Model::Model(std::string path) {
     std::filesystem::path executable_path(path);
     std::filesystem::path main_path = executable_path.parent_path();
-    Data_path = main_path.string() + "\\Diarys";
+    Data_path = main_path.string() + "/Diarys";
     std::filesystem::create_directory(Data_path);
 }
 
 void Model::db_connect(std::string name) {
-    std::string path = Data_path + "\\" + name + ".db3";
+    std::string path = Data_path + "/" + name + ".db3";
     db = std::make_unique<SQLite::Database>(
         path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 }
 
 void Model::db_delete(std::string name) {
     db.reset();
-    std::string path = Data_path + "\\" + name + ".db3";
+    std::string path = Data_path + "/" + name + ".db3";
     remove(path.c_str());
 }
 
@@ -79,12 +79,7 @@ std::vector<std::vector<std::string>> Model::find_note(std::string search) {
 }
 
 void Model::create_note(std::string note, std::string keywords) {
-    time_t timestamp = time(NULL);
-    struct tm datetime = *localtime(&timestamp);
-    char out[50];
-
-    strftime(out, 50, "%d.%m.%y %H:%M:%S", &datetime);
-    std::string time{out};
+    std::string time = current_time();
     SQLite::Statement query(
         *db, "INSERT INTO " + table_name + " (note, keywords, time) VALUES (?, ?, ?)");
     query.bind(1, note);
@@ -93,21 +88,28 @@ void Model::create_note(std::string note, std::string keywords) {
     query.exec();
 }
 
-void Model::delete_note(std::string id) {
-    db->exec("DELETE FROM " + table_name + " WHERE id == " + id);
-    db->exec("UPDATE " + table_name + " SET id = id - 1 WHERE id > " + id + ";");
+void Model::delete_note(int id) {
+    SQLite::Statement deleteQuery(*db, "DELETE FROM " + table_name + " WHERE id = ?");
+    deleteQuery.bind(1, id);
+    deleteQuery.exec();
+
+    SQLite::Statement updateQuery(
+        *db, "UPDATE " + table_name + " SET id = id - 1 WHERE id > ?");
+    updateQuery.bind(1, id);
+    updateQuery.exec();
 }
 
 void Model::edit_note(std::string id, std::string note, std::string keywords) {
-    time_t timestamp = time(NULL);
-    struct tm datetime = *localtime(&timestamp);
-    char out[50];
+    std::string time = current_time();
 
-    strftime(out, 50, "%d.%m.%y %H:%M:%S", &datetime);
-    std::string time{out};
-
-    db->exec("UPDATE " + table_name + " SET note='" + note + "', keywords='" +
-             keywords + "', time='" + time + "' WHERE id='" + id + "'");
+    SQLite::Statement query(
+        *db,
+        "UPDATE " + table_name + " SET note = ?, keywords = ?, time =  ? WHERE id = ?");
+    query.bind(1, note);
+    query.bind(2, keywords);
+    query.bind(3, time);
+    query.bind(4, id);
+    query.exec();
 }
 
 std::vector<std::string> Model::read_note(const std::string id) {
@@ -137,4 +139,11 @@ std::vector<std::vector<std::string>> Model::note_list() {
     }
 
     return list;
+}
+
+std::string Model::current_time() {
+    std::time_t t = std::time(nullptr);
+    char buf[20];
+    std::strftime(buf, sizeof(buf), "%d.%m.%y %H:%M:%S", std::localtime(&t));
+    return buf;
 }

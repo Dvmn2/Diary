@@ -32,25 +32,8 @@ void Controller::db_work() {
 
 void Controller::db_task1() {
     std::vector<std::string> list = model.db_list();
-    /*
-    if (list.size() == 0) {
-        cwuser.out_line(view.get_db_absent());
-    } else if (list.size() == 1) {
-        dbname = list[0];
-        model.db_connect(dbname);
-        cwuser.out_line(view.get_success());
-        cwuser.out_line(view.get_space(1));
-        table_work();
-    } else {
-    */
     cwuser.out_line(view.get_space(1));
-    cwuser.out_line(view.get_self_variants(list));
-    int list_num = int_enter();
-    while (list_num < 0 || list_num > list.size()) {
-        missing();
-        cwuser.out_line(view.get_self_variants(list));
-        list_num = int_enter();
-    }
+    int list_num = select_from_list(list);
     if (list_num != 0) {
         std::string dbname = list[list_num - 1];
         model.db_connect(dbname);
@@ -58,7 +41,6 @@ void Controller::db_task1() {
         cwuser.out_line(view.get_space(1));
         table_work();
     }
-    //}
     cwuser.out_line(view.get_space(1));
 }
 
@@ -81,14 +63,7 @@ void Controller::db_task2() {
 void Controller::db_task3() {
     cwuser.out_line(view.get_space(1));
     std::vector<std::string> list = model.db_list();
-    std::string variants = view.get_self_variants(list);
-    cwuser.out_line(variants);
-    int list_num = int_enter();
-    while (list_num < 0 || list_num > list.size()) {
-        missing();
-        cwuser.out_line(variants);
-        list_num = int_enter();
-    }
+    int list_num = select_from_list(list);
     if (list_num != 0) {
         std::string dbname = list[list_num - 1];
         model.db_delete(dbname);
@@ -125,13 +100,7 @@ void Controller::table_work() {
 void Controller::table_task1() {
     std::vector<std::string> list = model.table_list();
     cwuser.out_line(view.get_space(1));
-    cwuser.out_line(view.get_self_variants(list));
-    int list_num = int_enter();
-    while (list_num < 0 || list_num > list.size()) {
-        missing();
-        cwuser.out_line(view.get_self_variants(list));
-        list_num = int_enter();
-    }
+    int list_num = select_from_list(list);
     if (list_num != 0) {
         std::string name = list[list_num - 1];
         model.table_name = name;
@@ -161,14 +130,7 @@ void Controller::table_task2() {
 void Controller::table_task3() {
     cwuser.out_line(view.get_space(1));
     std::vector<std::string> list = model.table_list();
-    std::string variants = view.get_self_variants(list);
-    cwuser.out_line(variants);
-    int list_num = int_enter();
-    while (list_num < 0 || list_num > list.size()) {
-        missing();
-        cwuser.out_line(variants);
-        list_num = int_enter();
-    }
+    int list_num = select_from_list(list);
     if (list_num != 0) {
         std::string name = list[list_num - 1];
         model.delete_table(name);
@@ -227,17 +189,10 @@ void Controller::note_task2() {
 void Controller::note_task3() {
     cwuser.out_line(view.get_space(1));
     std::vector<std::vector<std::string>> list = model.note_list();
-    std::string variants =
-        view.get_self_variants(view.note_list_list_to_note_list(list));
-    cwuser.out_line(variants);
-    int list_num = int_enter();
-    while (list_num < 0 || list_num > list.size()) {
-        missing();
-        cwuser.out_line(variants);
-        list_num = int_enter();
-    }
+    std::vector<std::string> variants = view.note_list_list_to_note_list(list);
+    int list_num = select_from_list(variants);
     if (list_num != 0) {
-        model.delete_note(std::to_string(list_num));
+        model.delete_note(list_num);
         cwuser.out_line(view.get_success());
     }
     cwuser.out_line(view.get_space(1));
@@ -269,16 +224,23 @@ void Controller::missing() {
 }
 
 int Controller::int_enter() {
-    std::string inp = cwuser.inp_word();
-    int f = 1;
-    int value;
-    while (f) try {
-            value = std::stoi(inp);
-            f = 0;
+    while (true) {
+        try {
+            return std::stoi(cwuser.inp_word());
         } catch (...) {
             cwuser.out_line(view.get_int_req());
-            inp = cwuser.inp_word();
         }
+    }
+}
 
-    return value;
+
+int Controller::select_from_list(const std::vector<std::string>& list) {
+    cwuser.out_line(view.get_self_variants(list));
+    int n = int_enter();
+    while (n < 0 || n > list.size()) {
+        missing();
+        cwuser.out_line(view.get_self_variants(list));
+        n = int_enter();
+    }
+    return n;
 }

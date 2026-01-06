@@ -34,4 +34,5 @@ class Controller {
 
     void missing();
     int int_enter();
+    int select_from_list(const std::vector<std::string>& list);
 };
