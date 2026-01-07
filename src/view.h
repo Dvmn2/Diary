@@ -21,10 +21,11 @@ class View {
         "1. Select database\n"
         "2. Create database\n"
         "3. Delete database\n"
+        "4. Rename database\n"
         "0. Exit\n"
-        "Select a task (0-3): ";
+        "Select a task (0-4): ";
 
-    const char* DB_NAME_PROMPT = "Enter database name (en):\n> ";
+    const char* DB_NAME_PROMPT = "Enter database name:\n> ";
 
     const char* DB_NOT_SELECTED = "First, create a database\n";
 
@@ -32,8 +33,9 @@ class View {
         "1. Select table\n"
         "2. Create table\n"
         "3. Delete table\n"
+        "4. Rename table\n"
         "0. Exit\n"
-        "Select a task (0-3): ";
+        "Select a task (0-4): ";
 
     const char* TABLE_NAME_PROMPT = "Enter table name:\n> ";
 

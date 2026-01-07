@@ -21,11 +21,13 @@ class Model {
     std::vector<std::string> database_list();
     int create_database(std::string& name);
     int delete_database(int id);
+    int rename_database(int id, const std::string& new_name);
 
     int table_connect(int id);
     std::vector<std::string> table_list();
     int create_table(std::string& name);
     int delete_table(int id);
+    int rename_table(int id, const std::string& new_name);
 
     std::vector<note> notes_list();
     std::vector<note> search_note(const std::string& text);

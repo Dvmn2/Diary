@@ -5,16 +5,20 @@ void TableManager::connect(std::unique_ptr<SQLite::Database>& databasei) {
 }
 
 void TableManager::disconnect(std::unique_ptr<SQLite::Database>& databasei) {
-    databasei  = std::move(database);
+    databasei = std::move(database);
 }
 
 void TableManager::create_table(const std::string& name) {
     database->exec("CREATE TABLE '" + name +
-                  "' (id INTEGER PRIMARY KEY, note TEXT, keywords TEXT, time TEXT)");
+                   "' (id INTEGER PRIMARY KEY, note TEXT, keywords TEXT, time TEXT)");
 }
 
 void TableManager::drop_table(const std::string& name) {
     database->exec("DROP TABLE IF EXISTS '" + name + "'");
+}
+
+void TableManager::rename_table(const std::string& name1, const std::string& name2) {
+    database->exec("ALTER TABLE '" + name1 + "' RENAME TO '" + name2 + "'");
 }
 
 std::vector<std::string> TableManager::list_tables() {

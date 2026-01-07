@@ -12,6 +12,7 @@ class DatabaseManager {
 
     void create_database(const std::string& name);
     void delete_database(const std::string& name);
+    void rename_database(const std::string& old_name, const std::string& new_name);
     std::vector<std::string> list_databases();
 
     std::string full_path(const std::string& name);

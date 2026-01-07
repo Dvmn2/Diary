@@ -13,6 +13,7 @@ class TableManager {
 
     void create_table(const std::string& name);
     void drop_table(const std::string& name);
+    void rename_table(const std::string& name1, const std::string& name2);
     std::vector<std::string> list_tables();
 
    private:

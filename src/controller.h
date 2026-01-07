@@ -19,11 +19,13 @@ class Controller {
     void db_task1();
     void db_task2();
     void db_task3();
+    void db_task4();
 
     void table_work();
     void table_task1();
     void table_task2();
     void table_task3();
+    void table_task4();
 
     void note_work();
     void note_task1();

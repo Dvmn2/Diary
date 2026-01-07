@@ -44,7 +44,7 @@ std::string View::notes_to_line(const std::vector<note>& note_list) {
 
 std::string View::full_note(const note& rec) {
     std::ostringstream out;
-    out << "\n" << rec.text << "\n" << rec.keywords << "\n" << rec.time << "\n";
+    out << rec.text << "\n" << rec.keywords << "\n" << rec.time << "\n";
     return out.str();
 }
 

@@ -43,6 +43,23 @@ int Model::delete_database(int id) {
     return 0;
 }
 
+int Model::rename_database(int id, const std::string& new_name) {
+    if (!id) {
+        return 0;
+    }
+    id--;
+    std::vector<std::string> list = DatabaseM.list_databases();
+    if (!in_range(id, list.size() - 1)) {
+        return 1;
+    }
+    auto id2 = std::find(list.begin(), list.end(), new_name);
+    if (id2 != list.end()) {
+        return 2;
+    }
+    DatabaseM.rename_database(list[id], new_name);
+    return 0;
+}
+
 int Model::table_connect(int id) {
     if (!id) {
         return 0;
@@ -91,6 +108,20 @@ int Model::delete_table(int id) {
         return 1;
     }
     TableM.drop_table(list[id]);
+    TableM.disconnect(database);
+    return 0;
+}
+
+int Model::rename_table(int id, const std::string& new_name) {
+    TableM.connect(database);
+    id--;
+    std::vector<std::string> list = TableM.list_tables();
+    auto id2 = std::find(list.begin(), list.end(), new_name);
+    if (id2 != list.end()) {
+        TableM.disconnect(database);
+        return 1;
+    }
+    TableM.rename_table(list[id], new_name);
     TableM.disconnect(database);
     return 0;
 }

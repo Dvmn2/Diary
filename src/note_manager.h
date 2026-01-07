@@ -28,6 +28,4 @@ class NoteManager {
    private:
     std::unique_ptr<SQLite::Database> database;
     std::string table;
-
-    // explicit - запрещает неявноее преобразование типов
 };
