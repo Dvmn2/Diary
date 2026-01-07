@@ -172,18 +172,25 @@ void Controller::table_task3() {
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::table_task4() {
+void Controller::table_task4() {    
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> db_list = model.table_list();
     std::string variants = view.join_variants(db_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    cwuser.out_line(view.TABLE_NAME_PROMPT);
-    std::string name = cwuser.inp_word();
-    if (model.rename_table(id, name)) {
-        cwuser.out_line(view.ERROR_MSG);
-    } else {
-        cwuser.out_line(view.SUCCESS_MSG);
+    while (!model.in_range(id, db_list.size() - 1)) {
+        cwuser.out_line(variants);
+        id = int_enter();
+    }
+    if (id) {
+        cwuser.out_line(view.TABLE_NAME_PROMPT);
+        std::string name = cwuser.inp_word();
+        int query = model.rename_table(id, name);
+        if (query == 0) {
+            cwuser.out_line(view.SUCCESS_MSG);
+        } else {
+            cwuser.out_line(view.ERROR_MSG);
+        }
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }

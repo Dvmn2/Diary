@@ -113,13 +113,20 @@ int Model::delete_table(int id) {
 }
 
 int Model::rename_table(int id, const std::string& new_name) {
+    if (!id) {
+        return 0;
+    }
     TableM.connect(database);
     id--;
     std::vector<std::string> list = TableM.list_tables();
+    if (!in_range(id, list.size() - 1)) {
+        TableM.disconnect(database);
+        return 1;
+    }
     auto id2 = std::find(list.begin(), list.end(), new_name);
     if (id2 != list.end()) {
         TableM.disconnect(database);
-        return 1;
+        return 2;
     }
     TableM.rename_table(list[id], new_name);
     TableM.disconnect(database);

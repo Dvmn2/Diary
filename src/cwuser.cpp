@@ -19,6 +19,7 @@ std::string CWUser::inp_text() const {
 std::string CWUser::inp_word() const {
     std::string word;
     std::cin >> word;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return word;
 }
 

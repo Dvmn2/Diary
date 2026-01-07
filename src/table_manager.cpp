@@ -24,7 +24,8 @@ void TableManager::rename_table(const std::string& name1, const std::string& nam
 std::vector<std::string> TableManager::list_tables() {
     std::vector<std::string> tables;
     SQLite::Statement query(*database,
-                            "SELECT name FROM sqlite_master WHERE type='table'");
+                            "SELECT name FROM sqlite_master WHERE type='table' AND "
+                            "name NOT LIKE 'sqlite_%'");
     while (query.executeStep()) {
         tables.push_back(query.getColumn(0));
     }
