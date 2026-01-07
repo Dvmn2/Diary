@@ -1,149 +1,165 @@
 #include "model.h"
 
-Model::Model(std::string path) {
-    std::filesystem::path executable_path(path);
-    std::filesystem::path main_path = executable_path.parent_path();
-    Data_path = main_path.string() + "/Diarys";
-    std::filesystem::create_directory(Data_path);
-}
+Model::Model(DatabaseManager& dbm, TableManager& tm, NoteManager& nm)
+    : DatabaseM(dbm), TableM(tm), NoteM(nm) {}
 
-void Model::db_connect(std::string name) {
-    std::string path = Data_path + "/" + name + ".db3";
-    db = std::make_unique<SQLite::Database>(
-        path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-}
-
-void Model::db_delete(std::string name) {
-    db.reset();
-    std::string path = Data_path + "/" + name + ".db3";
-    remove(path.c_str());
-}
-
-std::vector<std::string> Model::db_list() {
-    std::vector<std::string> Array = {};
-    for (const auto& entry : std::filesystem::directory_iterator(Data_path)) {
-        if (entry.path().extension().string() == ".db3")
-            Array.push_back(entry.path().stem().string());
+int Model::database_connect(int id) {
+    if (!id) {
+        return 0;
     }
-
-    return Array;
+    id--;
+    std::vector<std::string> list = DatabaseM.list_databases();
+    if (!in_range(id, list.size() - 1)) {
+        return 1;
+    }
+    database = std::make_unique<SQLite::Database>(
+        DatabaseM.full_path(list[id]), SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+    return 0;
 }
 
-void Model::select_table(std::string name) { table_name = name; }
+std::vector<std::string> Model::database_list() { return DatabaseM.list_databases(); }
 
-void Model::create_table(std::string name) {
-    db->exec("CREATE TABLE " + name +
-             " (id INTEGER PRIMARY KEY, note TEXT, keywords TEXT, time TEXT)");
+int Model::create_database(std::string& name) {
+    std::vector<std::string> list = DatabaseM.list_databases();
+    auto id = std::find(list.begin(), list.end(), name);
+    if (id != list.end()) {
+        return 1;
+    }
+    DatabaseM.create_database(name);
+    return 0;
 }
 
-void Model::delete_table(std::string name) { db->exec("DROP TABLE IF EXISTS " + name); }
+int Model::delete_database(int id) {
+    if (!id) {
+        return 0;
+    }
+    id--;
+    std::vector<std::string> list = DatabaseM.list_databases();
+    if (!in_range(id, list.size() - 1)) {
+        return 1;
+    }
+    database.reset();
+    DatabaseM.delete_database(list[id]);
+    return 0;
+}
+
+int Model::table_connect(int id) {
+    if (!id) {
+        return 0;
+    }
+    id--;
+    TableM.connect(database);
+    std::vector<std::string> list = TableM.list_tables();
+    if (!in_range(id, list.size() - 1)) {
+        TableM.disconnect(database);
+        return 1;
+    }
+    table = list[id];
+    TableM.disconnect(database);
+    return 0;
+}
 
 std::vector<std::string> Model::table_list() {
-    std::vector<std::string> Array = {};
-    SQLite::Statement query(*db, "SELECT name FROM sqlite_master WHERE type='table'");
-    while (query.executeStep()) {
-        Array.push_back(query.getColumn(0));
+    TableM.connect(database);
+    std::vector<std::string> ret = TableM.list_tables();
+    TableM.disconnect(database);
+    return ret;
+}
+
+int Model::create_table(std::string& name) {
+    TableM.connect(database);
+    std::vector<std::string> list = TableM.list_tables();
+    auto id = std::find(list.begin(), list.end(), name);
+    if (id != list.end()) {
+        TableM.disconnect(database);
+        return 1;
     }
-
-    return Array;
+    TableM.create_table(name);
+    TableM.disconnect(database);
+    return 0;
 }
 
-std::vector<std::vector<std::string>> Model::find_note(std::string search) {
-    std::vector<std::vector<std::string>> results = {};
-
-    bool is_number =
-        !search.empty() && std::all_of(search.begin(), search.end(), ::isdigit);
-
-    SQLite::Statement query(
-        *db, is_number ? "SELECT id, note, keywords, time FROM " + table_name +
-                             " WHERE id = ?"
-                       : "SELECT id, note, keywords, time FROM " + table_name +
-                             " WHERE note LIKE ? OR keywords LIKE ?");
-
-    if (is_number) {
-        query.bind(1, std::stoi(search));
-    } else {
-        std::string pattern = "%" + search + "%";
-        query.bind(1, pattern);
-        query.bind(2, pattern);
+int Model::delete_table(int id) {
+    if (!id) {
+        return 0;
     }
-
-    while (query.executeStep()) {
-        results.push_back({std::to_string(query.getColumn(0).getInt()),
-                           query.getColumn(1).getString(),
-                           query.getColumn(2).getString(),
-                           query.getColumn(3).getString()});
+    id--;
+    TableM.connect(database);
+    std::vector<std::string> list = TableM.list_tables();
+    if (!in_range(id, list.size() - 1)) {
+        TableM.disconnect(database);
+        return 1;
     }
-
-    return results;
+    TableM.drop_table(list[id]);
+    TableM.disconnect(database);
+    return 0;
 }
 
-void Model::create_note(std::string note, std::string keywords) {
-    std::string time = current_time();
-    SQLite::Statement query(
-        *db, "INSERT INTO " + table_name + " (note, keywords, time) VALUES (?, ?, ?)");
-    query.bind(1, note);
-    query.bind(2, keywords);
-    query.bind(3, time);
-    query.exec();
+std::vector<note> Model::notes_list() {
+    NoteM.connect(database, table);
+    std::vector<note> ret = NoteM.list_notes();
+    NoteM.disconnect(database);
+    return ret;
 }
 
-void Model::delete_note(int id) {
-    SQLite::Statement deleteQuery(*db, "DELETE FROM " + table_name + " WHERE id = ?");
-    deleteQuery.bind(1, id);
-    deleteQuery.exec();
-
-    SQLite::Statement updateQuery(
-        *db, "UPDATE " + table_name + " SET id = id - 1 WHERE id > ?");
-    updateQuery.bind(1, id);
-    updateQuery.exec();
+std::vector<note> Model::search_note(const std::string& text) {
+    NoteM.connect(database, table);
+    std::vector<note> notes = NoteM.search(text);
+    NoteM.disconnect(database);
+    return notes;
 }
 
-void Model::edit_note(std::string id, std::string note, std::string keywords) {
-    std::string time = current_time();
-
-    SQLite::Statement query(
-        *db,
-        "UPDATE " + table_name + " SET note = ?, keywords = ?, time =  ? WHERE id = ?");
-    query.bind(1, note);
-    query.bind(2, keywords);
-    query.bind(3, time);
-    query.bind(4, id);
-    query.exec();
+void Model::create_note(const std::string& text, const std::string& keywords) {
+    NoteM.connect(database, table);
+    NoteM.create(text, keywords);
+    NoteM.disconnect(database);
 }
 
-std::vector<std::string> Model::read_note(const std::string id) {
-    SQLite::Statement query(
-        *db, "SELECT id, note, keywords, time FROM " + table_name + " WHERE id = ?");
-
-    query.bind(1, id);
-
-    std::vector<std::string> list;
-
-    if (query.executeStep()) {
-        list.push_back(std::to_string(query.getColumn(0).getInt()));
-        list.push_back(query.getColumn(1).getString());
-        list.push_back(query.getColumn(2).getString());
-        list.push_back(query.getColumn(3).getString());
+int Model::delete_note(int id) {
+    if (!id) {
+        return 0;
     }
-
-    return list;
-}
-
-std::vector<std::vector<std::string>> Model::note_list() {
-    std::vector<std::vector<std::string>> list = {};
-    SQLite::Statement query(*db, "SELECT * FROM " + table_name);
-    while (query.executeStep()) {
-        list.push_back({query.getColumn(1).getString(), query.getColumn(2).getString(),
-                        query.getColumn(3).getString()});
+    NoteM.connect(database, table);
+    int max_id = NoteM.max_id();
+    if (!in_range(id, max_id)) {
+        NoteM.disconnect(database);
+        return 1;
     }
-
-    return list;
+    NoteM.remove(id);
+    NoteM.disconnect(database);
+    return 0;
 }
 
-std::string Model::current_time() {
-    std::time_t t = std::time(nullptr);
-    char buf[20];
-    std::strftime(buf, sizeof(buf), "%d.%m.%y %H:%M:%S", std::localtime(&t));
-    return buf;
+int Model::update_note(int id, const std::string& text, const std::string& keywords) {
+    if (!id) {
+        return 0;
+    }
+    NoteM.connect(database, table);
+    int max_id = NoteM.max_id();
+    if (!in_range(id, max_id)) {
+        NoteM.disconnect(database);
+        return 1;
+    }
+    NoteM.update(id, text, keywords);
+    NoteM.disconnect(database);
+    return 0;
 }
+
+int Model::read_note(int id, note& rec) {
+    if (!id) {
+        return 0;
+    }
+    NoteM.connect(database, table);
+    int max_id = NoteM.max_id();
+    if (!in_range(id, max_id)) {
+        NoteM.disconnect(database);
+        return 1;
+    }
+    rec = NoteM.read(id);
+    NoteM.disconnect(database);
+    return 0;
+}
+
+bool Model::in_range(int search, int a) { return search >= 0 && search <= a; }
+
+bool Model::in_range(int search, int a, int b) { return search >= a && search <= b; }

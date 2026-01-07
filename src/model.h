@@ -1,35 +1,39 @@
 #pragma once
 
-#include <SQLiteCpp/SQLiteCpp.h>
-
-#include <ctime>
-#include <filesystem>
-#include <string>
-#include <vector>
+#include "db_manager.h"
+#include "note_manager.h"
+#include "structures.h"
+#include "table_manager.h"
 
 class Model {
+   private:
+    DatabaseManager& DatabaseM;
+    TableManager& TableM;
+    NoteManager& NoteM;
+
+    std::unique_ptr<SQLite::Database> database;
+    std::string table;
+
    public:
-    Model(std::string path);
+    Model(DatabaseManager& dbm, TableManager& tm, NoteManager& nm);
 
-    std::string Data_path = "";
-    std::string table_name = "";
+    int database_connect(int id);
+    std::vector<std::string> database_list();
+    int create_database(std::string& name);
+    int delete_database(int id);
 
-    std::unique_ptr<SQLite::Database> db;
-
-    void db_connect(std::string path);
-    void db_delete(std::string name);
-    std::vector<std::string> db_list();
-
-    void select_table(std::string name);
-    void create_table(std::string name);
-    void delete_table(std::string id);
+    int table_connect(int id);
     std::vector<std::string> table_list();
+    int create_table(std::string& name);
+    int delete_table(int id);
 
-    std::vector<std::vector<std::string>> find_note(std::string search);
-    void create_note(std::string note, std::string keywords);
-    void delete_note(int id);
-    void edit_note(std::string id, std::string note, std::string keywords);
-    std::vector<std::string> read_note(std::string id);
-    std::vector<std::vector<std::string>> note_list();
-    std::string current_time();
+    std::vector<note> notes_list();
+    std::vector<note> search_note(const std::string& text);
+    void create_note(const std::string& text, const std::string& keywords);
+    int delete_note(int id);
+    int update_note(int id, const std::string& text, const std::string& keywords);
+    int read_note(int id, note& rec);
+
+    bool in_range(int search, int a);
+    bool in_range(int search, int a, int b);
 };

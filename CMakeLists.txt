@@ -19,7 +19,7 @@ set(SQLITECPP_RUN_CPPLINT OFF CACHE BOOL "" FORCE)
 add_subdirectory(SQLiteCpp)
 
 # Add main.cpp example source code to the executable
-add_executable(Diary src/main.cpp src/controller.cpp src/cwuser.cpp src/model.cpp src/view.cpp)
+add_executable(Diary src/main.cpp src/controller.cpp src/cwuser.cpp src/model.cpp src/view.cpp src/db_manager.cpp src/table_manager.cpp src/note_manager.cpp)
 
 # Link SQLiteCpp_example1 with SQLiteCpp
 target_link_libraries(Diary SQLiteCpp)

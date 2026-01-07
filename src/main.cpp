@@ -5,8 +5,14 @@
 
 int main(int argc, char* argv[]) {
     CWUser cwu;
+    
     View v;
-    Model m(argv[0]);
+
+    DatabaseManager dbm(argv[0]);
+    TableManager tm;
+    NoteManager nm;
+    Model m(dbm, tm, nm);
+
     Controller c(cwu, v, m);
     c.run();
 

@@ -5,37 +5,39 @@
 #include <string>
 #include <vector>
 
+#include "structures.h"
+
 class View {
    public:
-    std::vector<std::string> flatten_note_list(
-        const std::vector<std::vector<std::string>>& notes);
+    std::vector<std::string> notes_to_lines(const std::vector<note>& note_list);
 
-    std::string note_to_line(const std::vector<std::string>& note);
-    std::string notes_to_line(const std::vector<std::vector<std::string>>& notes);
+    std::string note_to_line(const note& rec);
+    std::string notes_to_line(const std::vector<note>& note_list);
+    std::string full_note(const note& rec);
 
     std::string join_variants(const std::vector<std::string>& items);
 
-    static constexpr const char* DB_MENU =
+    const char* DB_MENU =
         "1. Select database\n"
         "2. Create database\n"
         "3. Delete database\n"
         "0. Exit\n"
         "Select a task (0-3): ";
 
-    static constexpr const char* DB_NAME_PROMPT = "Enter database name:\n> ";
+    const char* DB_NAME_PROMPT = "Enter database name (en):\n> ";
 
-    static constexpr const char* DB_NOT_SELECTED = "First, create a database\n";
+    const char* DB_NOT_SELECTED = "First, create a database\n";
 
-    static constexpr const char* TABLE_MENU =
+    const char* TABLE_MENU =
         "1. Select table\n"
         "2. Create table\n"
         "3. Delete table\n"
         "0. Exit\n"
         "Select a task (0-3): ";
 
-    static constexpr const char* TABLE_NAME_PROMPT = "Enter table name:\n> ";
+    const char* TABLE_NAME_PROMPT = "Enter table name:\n> ";
 
-    static constexpr const char* NOTE_MENU =
+    const char* NOTE_MENU =
         "1. Find note\n"
         "2. Create note\n"
         "3. Delete note\n"
@@ -44,29 +46,29 @@ class View {
         "0. Exit\n"
         "Select a task (0-5): ";
 
-    static constexpr const char* NOTE_NAME_PROMPT = "Enter note name:\n> ";
+    const char* NOTE_NAME_PROMPT = "Enter note name:\n> ";
 
-    static constexpr const char* INT_PROMPT = "Enter integer number:\n> ";
+    const char* INT_PROMPT = "Enter integer number:\n> ";
 
-    static constexpr const char* ELEMENT_PROMPT = "Enter element:\n> ";
+    const char* ELEMENT_PROMPT = "Enter element:\n> ";
 
-    static constexpr const char* ELEMENT_ID_PROMPT = "Enter element number:\n> ";
+    const char* ELEMENT_ID_PROMPT = "Enter element number:\n> ";
 
-    static constexpr const char* TEXT_PROMPT = "Enter text (0 - Finish):\n";
+    const char* TEXT_PROMPT = "Enter text (0 - Finish):\n";
 
-    static constexpr const char* KEYWORDS_PROMPT = "Enter keywords (0 - Finish):\n";
+    const char* KEYWORDS_PROMPT = "Enter keywords (0 - Finish):\n";
 
-    static constexpr const char* SEARCH_PROMPT = "Enter keyword:\n> ";
+    const char* SEARCH_PROMPT = "Enter keyword / id:\n> ";
 
-    static constexpr const char* NOTE_ID_PROMPT = "Enter note id:\n> ";
+    const char* NOTE_ID_PROMPT = "Enter note id:\n> ";
 
-    static constexpr const char* NAME_ALREADY_EXISTS = "This name already exists\n";
+    const char* NAME_ALREADY_EXISTS = "This name already exists\n";
 
-    static constexpr const char* ERROR_MSG = "Something went wrong\n";
+    const char* ERROR_MSG = "Something went wrong\n";
 
-    static constexpr const char* SUCCESS_MSG = "Successful\n";
+    const char* SUCCESS_MSG = "Successful\n";
 
-    static constexpr const char* INVALID_OPTION_MSG = "Non-existent task\n";
+    const char* INVALID_OPTION_MSG = "Non-existent task\n";
 
     static std::string repeat_new_lines(int count) { return std::string(count, '\n'); }
 
