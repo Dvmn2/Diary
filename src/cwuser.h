@@ -7,9 +7,9 @@
 
 class CWUser {
 public:
-    std::string inp_line() const;
-    std::string inp_text() const;
-    std::string inp_word() const;
+    std::string inp_line();
+    std::string inp_text();
+    std::string inp_word();
 
-    void out_line(const std::string& line) const;
+    void out_line(const std::string& line);
 };

@@ -1,12 +1,12 @@
 #include "cwuser.h"
 
-std::string CWUser::inp_line() const {
+std::string CWUser::inp_line() {
     std::string line;
     std::getline(std::cin, line);
     return line;
 }
 
-std::string CWUser::inp_text() const {
+std::string CWUser::inp_text() {
     std::string result;
     while (true) {
         std::string part = inp_line();
@@ -16,11 +16,11 @@ std::string CWUser::inp_text() const {
     return result;
 }
 
-std::string CWUser::inp_word() const {
+std::string CWUser::inp_word() {
     std::string word;
     std::cin >> word;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return word;
 }
 
-void CWUser::out_line(const std::string& line) const { std::cout << line; }
+void CWUser::out_line(const std::string& line) { std::cout << line; }

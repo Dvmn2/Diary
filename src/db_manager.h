@@ -18,7 +18,7 @@ class DatabaseManager {
     std::string full_path(const std::string& name);
     std::string base_path_str();
 
-    static constexpr const char* EXT = ".db3";
+    const char* EXT = ".db3";
 
    private:
     std::string base_path;
