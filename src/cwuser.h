@@ -1,12 +1,12 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
-#include <string>
 #include <limits>
+#include <string>
+#include <vector>
 
 class CWUser {
-public:
+   public:
     std::string inp_line();
     std::string inp_text();
     std::string inp_word();

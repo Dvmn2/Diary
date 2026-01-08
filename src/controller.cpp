@@ -5,7 +5,7 @@ Controller::Controller(CWUser& cwu, View& v, Model& m)
 
 void Controller::run() { db_work(); }
 
-void Controller::db_work() {
+void Controller::db_work() {  // Database menu
     std::string variants = view.DB_MENU;
     cwuser.out_line(variants);
     int task = int_enter();
@@ -32,28 +32,29 @@ void Controller::db_work() {
     }
 }
 
-void Controller::db_task1() {
+void Controller::db_task1() {  // Select database
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> db_list = model.database_list();
     std::string variants = view.join_variants(db_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (model.database_connect(id)) {
+    while (model.database_connect(id)) {            // Пока не получилось подключиться
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
-    }
-    if (id) {
+    }  // Выход если 0 или получилось
+    if (id) {  // Если получилось
         cwuser.out_line(view.repeat_new_lines(1));
-        table_work();
+        table_work();  // Переходим к таблицам
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::db_task2() {
+void Controller::db_task2() {  // Create database
     cwuser.out_line(view.DB_NAME_PROMPT);
     std::string db_name = cwuser.inp_word();
-    while (model.create_database(db_name)) {
-        cwuser.out_line(view.NAME_ALREADY_EXISTS);
+    while (model.create_database(db_name)) {        // Пока не получилось создать
+        cwuser.out_line(view.NAME_ALREADY_EXISTS);  // Пытаемся ещё раз
         cwuser.out_line(view.DB_NAME_PROMPT);
         db_name = cwuser.inp_word();
     }
@@ -61,46 +62,47 @@ void Controller::db_task2() {
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::db_task3() {
+void Controller::db_task3() {  // Delete database
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> db_list = model.database_list();
     std::string variants = view.join_variants(db_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (model.delete_database(id)) {
+    while (model.delete_database(id)) {             // Пока не получилось удалить
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
-    }
-    if (id) {
+    }  // Выход если 0 или получилось
+    if (id) {  // Если получилось
         cwuser.out_line(view.SUCCESS_MSG);
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::db_task4() {
+void Controller::db_task4() {  // Rename database
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> db_list = model.database_list();
     std::string variants = view.join_variants(db_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (!model.in_range(id, db_list.size() - 1)) {
+    while (!model.in_range(id, db_list.size())) {   // Пока id не в диапазоне
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
     }
-    if (id) {
+    if (id) {  // Если не 0
         cwuser.out_line(view.DB_NAME_PROMPT);
         std::string name = cwuser.inp_word();
-        int query = model.rename_database(id, name);
-        if (query == 0) {
-            cwuser.out_line(view.SUCCESS_MSG);
-        } else {
-            cwuser.out_line(view.ERROR_MSG);
+        while (model.rename_database(id, name)) {  // Пока не получилось переименновать
+            cwuser.out_line(view.DB_NAME_PROMPT);  // Пробуем ещё раз
+            name = cwuser.inp_word();
         }
+        cwuser.out_line(view.SUCCESS_MSG);
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::table_work() {
+void Controller::table_work() {  // Table menu
     std::string variants = view.TABLE_MENU;
     cwuser.out_line(variants);
     int task = int_enter();
@@ -127,28 +129,29 @@ void Controller::table_work() {
     }
 }
 
-void Controller::table_task1() {
+void Controller::table_task1() {  // Select table
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> table_list = model.table_list();
     std::string variants = view.join_variants(table_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (model.table_connect(id)) {
+    while (model.table_connect(id)) {               // Пока не получилось подключиться
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
-    }
-    if (id) {
+    }  // Выход если 0 или получилось
+    if (id) {  // Если получилось
         cwuser.out_line(view.repeat_new_lines(1));
         note_work();
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::table_task2() {
+void Controller::table_task2() {  // Create table
     cwuser.out_line(view.TABLE_NAME_PROMPT);
     std::string table_name = cwuser.inp_word();
-    while (model.create_table(table_name)) {
-        cwuser.out_line(view.NAME_ALREADY_EXISTS);
+    while (model.create_table(table_name)) {        // Пока не получилось создать
+        cwuser.out_line(view.NAME_ALREADY_EXISTS);  // Пытаемся ещё раз
         cwuser.out_line(view.TABLE_NAME_PROMPT);
         table_name = cwuser.inp_word();
     }
@@ -156,46 +159,48 @@ void Controller::table_task2() {
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::table_task3() {
+void Controller::table_task3() {  // Delete table
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> table_list = model.table_list();
     std::string variants = view.join_variants(table_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (model.delete_table(id)) {
+    while (model.delete_table(id)) {                // Пока не получилось удалить
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
-    }
-    if (id) {
+    }  // Выход если 0 или получилось
+    if (id) {  // Если получилось
         cwuser.out_line(view.SUCCESS_MSG);
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::table_task4() {    
+void Controller::table_task4() {  // Rename table
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<std::string> db_list = model.table_list();
     std::string variants = view.join_variants(db_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (!model.in_range(id, db_list.size() - 1)) {
+    while (!model.in_range(id, db_list.size())) {   // Пока id не в диапазоне
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
     }
-    if (id) {
+    if (id) {  // Если не 0
         cwuser.out_line(view.TABLE_NAME_PROMPT);
         std::string name = cwuser.inp_word();
-        int query = model.rename_table(id, name);
-        if (query == 0) {
-            cwuser.out_line(view.SUCCESS_MSG);
-        } else {
-            cwuser.out_line(view.ERROR_MSG);
+        while (model.rename_table(id, name)) {  // Пока не получилось переименновать
+            cwuser.out_line(view.NAME_ALREADY_EXISTS);  // Пытаемся ещё раз
+            cwuser.out_line(view.TABLE_NAME_PROMPT);
+            name = cwuser.inp_word();
         }
+        cwuser.out_line(view.SUCCESS_MSG);
     }
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::note_work() {
+void Controller::note_work() {  // Note menu
     std::string variants = view.NOTE_MENU;
     cwuser.out_line(variants);
     int task = int_enter();
@@ -225,7 +230,7 @@ void Controller::note_work() {
     }
 }
 
-void Controller::note_task1() {
+void Controller::note_task1() {  // Search note
     cwuser.out_line(view.SEARCH_PROMPT);
     std::string search = cwuser.inp_word();
     std::vector<note> note_list = model.search_note(search);
@@ -234,7 +239,7 @@ void Controller::note_task1() {
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::note_task2() {
+void Controller::note_task2() {  // Create note
     cwuser.out_line(view.TEXT_PROMPT);
     std::string text = cwuser.inp_text();
     cwuser.out_line(view.KEYWORDS_PROMPT);
@@ -243,14 +248,15 @@ void Controller::note_task2() {
     model.create_note(text, keywords);
 }
 
-void Controller::note_task3() {
+void Controller::note_task3() {  // Delete note
     cwuser.out_line(view.repeat_new_lines(1));
     std::vector<note> notes_list = model.notes_list();
     std::vector<std::string> var_list = view.notes_to_lines(notes_list);
     std::string variants = view.join_variants(var_list);
     cwuser.out_line(variants);
     int id = int_enter();
-    while (model.delete_note(id)) {
+    while (model.delete_note(id)) {                 // Пока не получилось удалить
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
         cwuser.out_line(variants);
         id = int_enter();
     }
@@ -260,32 +266,51 @@ void Controller::note_task3() {
     cwuser.out_line(view.repeat_new_lines(1));
 }
 
-void Controller::note_task4() {
-    cwuser.out_line(view.NOTE_ID_PROMPT);
+void Controller::note_task4() {  // Update note
+    cwuser.out_line(view.repeat_new_lines(1));
+    std::vector<note> notes_list = model.notes_list();
+    std::vector<std::string> var_list = view.notes_to_lines(notes_list);
+    std::string variants = view.join_variants(var_list);
+    cwuser.out_line(variants);
     int id = int_enter();
-    cwuser.out_line(view.TEXT_PROMPT);
-    std::string text = cwuser.inp_text();
-    cwuser.out_line(view.KEYWORDS_PROMPT);
-    std::string keywords = cwuser.inp_text();
-    if (model.update_note(id, text, keywords)) {
-        cwuser.out_line(view.ERROR_MSG);
-    } else {
-        cwuser.out_line(view.SUCCESS_MSG);
-    }
-}
-
-void Controller::note_task5() {
-    cwuser.out_line(view.NOTE_ID_PROMPT);
-    int id = int_enter();
-    note rec;
-    while (model.read_note(id, rec)) {
-        cwuser.out_line(view.NOTE_ID_PROMPT);
+    while (!model.in_range(id, var_list.size())) {  // Пока id не в диапазоне
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
+        cwuser.out_line(variants);
         id = int_enter();
     }
-    if (id) {
+    if (id) {  // Если не 0
+        cwuser.out_line(view.TEXT_PROMPT);
+        std::string text = cwuser.inp_text();
+        cwuser.out_line(view.KEYWORDS_PROMPT);
+        std::string keywords = cwuser.inp_text();
+        cwuser.out_line(view.repeat_new_lines(1));
+        model.update_note(id, text, keywords);
+        cwuser.out_line(view.SUCCESS_MSG);
+    }
+
+    cwuser.out_line(view.repeat_new_lines(1));
+}
+
+void Controller::note_task5() {  // Read note
+    note rec;
+    cwuser.out_line(view.repeat_new_lines(1));
+    std::vector<note> notes_list = model.notes_list();
+    std::vector<std::string> var_list = view.notes_to_lines(notes_list);
+    std::string variants = view.join_variants(var_list);
+    cwuser.out_line(variants);
+    int id = int_enter();
+    while (!model.in_range(id, var_list.size())) {  // Пока id не в диапазоне
+        cwuser.out_line(view.repeat_new_lines(1));  // Пытаемся ещё раз
+        cwuser.out_line(variants);
+        id = int_enter();
+    }
+    if (id) {  // Если не 0
+        cwuser.out_line(view.repeat_new_lines(1));
+        model.read_note(id, rec);
         std::string line = view.full_note(rec);
         cwuser.out_line(line);
     }
+
     cwuser.out_line(view.repeat_new_lines(1));
 }
 

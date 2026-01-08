@@ -9,8 +9,8 @@ std::vector<std::string> View::notes_to_lines(const std::vector<note>& note_list
 }
 
 std::string View::note_to_line(const note& rec) {
-    constexpr int max_len = 20;  // Значение известно на этапе компиляции
-    std::ostringstream out;      // cout только в переменную и с переводом в коде
+    int max_len = 20;
+    std::ostringstream out;  // cout только в переменную и с переводом в коде
 
     std::string text = rec.text;
     std::replace(text.begin(), text.end(), '\n', ' ');  // Заменяем ненужное

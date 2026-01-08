@@ -17,12 +17,12 @@ void DatabaseManager::delete_database(const std::string& name) {
     std::filesystem::remove(full_path(name));
 }
 
-void DatabaseManager::rename_database(const std::string& old_name, const std::string& new_name) {
+void DatabaseManager::rename_database(const std::string& old_name,
+                                      const std::string& new_name) {
     std::filesystem::path old_path = full_path(old_name);
     std::filesystem::path new_path = full_path(new_name);
     std::filesystem::rename(old_path, new_path);
 }
-
 
 std::vector<std::string> DatabaseManager::list_databases() {
     std::vector<std::string> result;

@@ -15,26 +15,26 @@ class Controller {
 
     void run();
 
-    void db_work();
-    void db_task1();
-    void db_task2();
-    void db_task3();
-    void db_task4();
+    void db_work();   // Database menu
+    void db_task1();  // Select database
+    void db_task2();  // Create database
+    void db_task3();  // Delete database
+    void db_task4();  // Rename database
 
-    void table_work();
-    void table_task1();
-    void table_task2();
-    void table_task3();
-    void table_task4();
+    void table_work();   // Table menu
+    void table_task1();  // Select table
+    void table_task2();  // Create table
+    void table_task3();  // Delete table
+    void table_task4();  // Rename table
 
-    void note_work();
-    void note_task1();
-    void note_task2();
-    void note_task3();
-    void note_task4();
-    void note_task5();
+    void note_work();   // Note menu
+    void note_task1();  // Search note
+    void note_task2();  // Create note
+    void note_task3();  // Delete note
+    void note_task4();  // Update note
+    void note_task5();  // Read note
 
     void missing();
-    int int_enter();
+    int int_enter();  // Enter int number
     int select_from_list(const std::vector<std::string>& list);
 };
