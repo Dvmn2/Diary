@@ -6,6 +6,11 @@ static std::string filter_allowed(const std::string& input) {
     return std::regex_replace(input, allowed, "");
 }
 
+std::string CWUser::db_filter(const std::string& input) {
+    const std::regex forbidden(R"([\/\*\?":<>|])");
+    return std::regex_replace(input, forbidden, "");
+}
+
 std::string CWUser::inp_line() {
     std::string line;
     std::getline(std::cin, line);

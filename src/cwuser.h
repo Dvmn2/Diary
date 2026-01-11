@@ -8,6 +8,7 @@
 
 class CWUser {
    public:
+    std::string CWUser::db_filter(const std::string& input);
     std::string inp_line();
     std::string inp_text();
     std::string inp_word();

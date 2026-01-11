@@ -53,6 +53,7 @@ void Controller::db_task1() {  // Select database
 void Controller::db_task2() {  // Create database
     cwuser.out_line(view.DB_NAME_PROMPT);
     std::string db_name = cwuser.inp_word();
+    db_name = cwuser.db_filter(db_name);
     while (model.create_database(db_name)) {        // Пока не получилось создать
         cwuser.out_line(view.NAME_ALREADY_EXISTS);  // Пытаемся ещё раз
         cwuser.out_line(view.DB_NAME_PROMPT);
