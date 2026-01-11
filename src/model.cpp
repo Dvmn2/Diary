@@ -56,6 +56,7 @@ int Model::rename_database(int id, const std::string& new_name) {
     if (id2 != list.end()) {
         return 2;
     }
+    database.reset();
     DatabaseM.rename_database(list[id], new_name);
     return 0;
 }
