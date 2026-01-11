@@ -95,9 +95,11 @@ void Controller::db_task4() {  // Rename database
     if (id) {  // Если не 0
         cwuser.out_line(view.DB_NAME_PROMPT);
         std::string name = cwuser.inp_word();
+        name = cwuser.db_filter(name);
         while (model.rename_database(id, name)) {  // Пока не получилось переименновать
             cwuser.out_line(view.DB_NAME_PROMPT);  // Пробуем ещё раз
             name = cwuser.inp_word();
+            name = cwuser.db_filter(name);
         }
         cwuser.out_line(view.SUCCESS_MSG);
     }
