@@ -84,6 +84,9 @@ std::vector<std::string> Model::table_list() {
 }
 
 int Model::create_table(std::string& name) {
+    if (name == "table") {
+        return 1;
+    }
     TableM.connect(database);
     std::vector<std::string> list = TableM.list_tables();
     auto id = std::find(list.begin(), list.end(), name);
@@ -115,6 +118,9 @@ int Model::delete_table(int id) {
 int Model::rename_table(int id, const std::string& new_name) {
     if (!id) {
         return 0;
+    }
+    if (new_name == "table") {
+        return 1;
     }
     TableM.connect(database);
     id--;
